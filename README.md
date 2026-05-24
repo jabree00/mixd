@@ -45,15 +45,15 @@ hexd implementation in preparation for the Tool 1 Refinements.</li>
 
 <h3>EVALUATION:</h3>
 <ol>
-<li><strong>TESTING -</strong> I used the basic mixd command:<br />
+<li><strong>Testing -</strong> I used the basic mixd command:<br />
 <strong>./mixd /path/to/file1 /path/to/file2</strong><br />
 Where file1 and file2 are copied of the same binary but some bytes in 
 the beginning of file1 have been modified.</li>
 
-<li><strong>RESULTS -</strong> It worked! The bytes that are the same appear as normal. The
+<li><strong>Results -</strong> It worked! The bytes that are the same appear as normal. The
 bytes that differ appear as an __.</li>
  
-<li><strong>KNOWN ISSUES: -</strong><br />Manually shifting byte ranges to find an overall
+<li><strong>Known issues -</strong><br />Manually shifting byte ranges to find an overall
 between files can be tedious. I may implement a "brute-force" match feature that selects 
 the range where there is the most overall between files.</li>
 </ol>
