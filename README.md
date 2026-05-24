@@ -106,7 +106,6 @@ Note: mixd.1 is the man page
 <li>Adding Locally Hosted Code to GitHub: <a href="https://docs.github.com/en/migrations/importing-source-code/using-the-command-line-to-import-source-code/adding-locally-hosted-code-to-github">GitHub Tutorial</a></li>
 </ol>
 
-
 <h2>ORIGINAL DOCUMENTATION BELOW:</h2> 
 
 **hexd** prints a human-readable hexdump of the specified files, or standard
