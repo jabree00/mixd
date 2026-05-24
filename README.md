@@ -67,9 +67,44 @@ the range where there is the most overall between files.</li>
 
 <p>The files look highly similar based on the first execution, but
 shifting the range produces a noticeable byte match.</p>
- 
 
+<h2>HOW TO GET MIXD RUNNING ON YOUR SYSTEM</h2>
+<p><strong>Note:</strong> This project has been tested in DSU IALAB on an
+Ubuntu 24.04 VM.</p>
+<ol>
+<li>Download the project folder from this GitHub repo.</li>
+<li>If needed, install gcc using <br />
+<strong>sudo apt update; sudo apt upgrade; sudo apt install gcc <li>
+<li>Open the Linux Terminal</li>
+<li>Enter the project folder. You can run <strong>cd ~/Downloads/mixd</strong></li>
+<li>Run </strong>./mixd path/to/file1 ./mixd path/to/file2</strong> to get started.</li>
 
+<h3>Installing the man pages.</h3>
+Note: mixd.1 is the man page 
+<ol>
+<li><strong>sudo mkdir /usr/local/share/man/man1</strong> to create a folder for man pages in the "User Commands" section. 
+<li><strong>sudo cp mixd.1 /usr/local/share/man/man1/</strong> to copy the man page</li>
+<li><strong>sudo mandb</strong> to update the manpage database.</li>
+</ol>
+
+<h2>AI USAGE DISCLOSURE:</h2>
+<p>AI was used in the following ways for developing the files and documentation:</p>
+<ol>
+<li>Identify resources for "safe" binary files.</li>
+<li>Identify the purpose of .1 files.</li>
+<li>Add a page to the manpages Linux.</li>
+<li>Learn how ANSI code are used to print colors in the Terminal.</li>
+<li>Learn what manpage "sections" are for.<li>
+</ol>
+
+<h2>OTHER RESOURCES USED IN THE MAKING OF THIS RESOURCE:</h2>
+<ol>
+<li>To retrieve the original sample1 file: </li>
+<li>Generating SSH keys: <a href="https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent">GitHub Tutorial</a></li>
+<li>Testing SSH connection: <a href="https://docs.github.com/en/authentication/connecting-to-github-with-ssh/testing-your-ssh-connection">GitHub Tutorial</a></li>
+<li>Forking GitHub Repository: <a href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/fork-a-repo">GitHub Tutorial</a></li>
+<li>Adding Locally Hosted Code to GitHub: <a href="https://docs.github.com/en/migrations/importing-source-code/using-the-command-line-to-import-source-code/adding-locally-hosted-code-to-github">GitHub Tutorial</a></li>
+</ol>
 
 
 <h2>ORIGINAL DOCUMENTATION BELOW:</h2> 

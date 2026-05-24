@@ -52,7 +52,7 @@ Number of octets per group, set to
 .Li 8
 by default.
 .It Fl r Ar range
-Range of octets to print from each file.
+Range of octets to print from the first file.
 Specified as either
 .Em start-end
 or
@@ -63,6 +63,8 @@ and
 .Em end Ns / Ns Em count
 are positive integers specified in either decimal, hexadecimal or octal
 (C-style notation).
+.It Fl R Ar range2
+same as above but adjusts the range for file2
 .Pp
 When the former syntax is used, both ends of the range are optional and
 default to the start or end of the file when omitted.
