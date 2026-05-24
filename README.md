@@ -6,12 +6,12 @@
 It builds upon the contributions of the original hexd project but
 currently has some trade-offs:
 
-<ol>
-<li>The option to repeat file lines has been removed. This might interfere
+The option to repeat file lines has been removed. This might interfere
 with the ease of analyzing similarities between files. For this reason, revising 
-the feature for mix has been omitted.</li> 
-<li>Analysis of an infinite number of files in a single run of the program.</li> 
-</ol>
+the feature for mix has been omitted.
+
+Analysis of an infinite number of files in a single run of the program.</li> 
+
 
 <h3>PROBLEM DEFINITION:</h3>
 
@@ -32,8 +32,10 @@ the matching bytes. One has to perform a confusing, manual eye search.</li>
 
 <li><strong>Gap Fixed -</strong> This tool fills the gap of providing a colorful visualization 
 AND file comparison all in one command.</li> 
+</ol>
 
 <h3>SYSTEM DESIGN:<h3>
+<ol>
 <li><strong>Architecture -</strong> This is a one-file C program that should portable for any
 C-supporting terminal application.</li>
 
