@@ -71,8 +71,7 @@ shifting the range produces a noticeable byte match.</p>
 Ubuntu 24.04 VM.</p>
 <ol>
 <li>Download the project folder from this GitHub repo.</li>
-<li>If needed, install gcc using <br />
-<strong>sudo apt update; sudo apt upgrade; sudo apt install gcc <li>
+<li>If needed, install gcc using...<br /><strong>sudo apt update; sudo apt upgrade; sudo apt install gcc</strong><li>
 <li>Open the Linux Terminal.</li>
 <li>Enter the project folder. You can run <strong>cd ~/Downloads/mixd</strong></li>
 <li>Run </strong>./mixd path/to/file1 path/to/file2</strong> to get started.</li>
