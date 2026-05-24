@@ -20,6 +20,7 @@ size_t option_groupsize    = 8;
 bool option_use_formatting = true;
 bool option_collapse_repetition = true;
 struct offset_range option_range  = { 0, -1 };
+struct offset_range option_range2 = { 0, -1 }; 
 
 const char *formatting_zero      = "38;5;238";
 const char *formatting_all       = "38;5;167";
@@ -61,8 +62,8 @@ void comparator(FILE *f, const char *filename, FILE *f2, const char *filename2) 
   printf("File 1 is ready for processing.\n"); 
   
   // Seek to start for file #2; fall back to a consuming loop for non-seekable files
-  if (fseeko(f2, option_range.start, SEEK_SET) < 0) {
-    off_t remaining2 = option_range.start;
+  if (fseeko(f2, option_range2.start, SEEK_SET) < 0) {
+    off_t remaining2 = option_range2.start;
     while (remaining2 != 0 && fgetc(f2) != EOF) remaining2--;
     if (ferror(f2)) err(1, "(while seeking) %s", filename2);
   }
@@ -210,12 +211,13 @@ int main(int argc, char *argv[]) {
 
   // Update settings variables based on command-line arguments
   int opt;
-  while (opt = getopt(argc, argv, "g:hpPr:w"), opt != -1) {
+  while (opt = getopt(argc, argv, "g:hpPr:R:w"), opt != -1) {
     switch (opt) {
       case 'g': option_groupsize = atol(optarg); break;
       case 'p': option_use_formatting = false; break;
       case 'P': option_use_formatting = true; break;
       case 'r': option_range = parse_range(optarg); break;
+      case 'R': option_range2 = parse_range(optarg); break; 
       case 'w': option_columns = atol(optarg); break; 
       case 'h': // fall through
       default:
