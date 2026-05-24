@@ -1,3 +1,14 @@
+MIXD-Specific Documentation: 
+
+**mixd** focused on comparing bytes in two files. 
+It builds upon the contributions of the original hexd project but
+currently has some trade-offs:
+- Omitting repeat file lines (this would hide some critical details for 
+comparative analysis) 
+- Analysis of an infinite number of files in a single run of the program. 
+
+Original Documentation below: 
+
 **hexd** prints a human-readable hexdump of the specified files, or standard
 input if omitted.  Its main distinguishing feature is the use of colours to
 visually indicate which range of values an octet belongs to, aiding in
