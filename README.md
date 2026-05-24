@@ -20,14 +20,14 @@ but the blur of the colors/bytes makes it difficult to quickly identify
 visual similarities between two different files.</li>
 
 <li><strong>The Importance -</strong> Malware often makes use of a previous codebase, so 
-this a quick means of identifying trends with building on the visualization provided 
-by pixd/hexd. This project actually grew out of my own challenges in malware analysis 
+this is a quick means of identifying visual similarities. This project actually grew out of my own challenges in malware analysis 
 and a desire to have a tool like this.</li>
 
 <li><strong>Existing tools -</strong> As far as I have seen the only option for visual
 comparison (according to Gemini) is a combination of other tools - i.e
-diff and xxd. However, even then, these tools make it difficult to find 
-the matching bytes. One has to perform a confusing, manual eye search.</li> 
+diff and xxd. However, even then, the combination of tools provides a 
+side-by-side comparison instead of an overlay of the two files.
+One has to perform a confusing, manual eye search to find patterns.</li> 
 
 <li><strong>Gap Fixed -</strong> This tool fills the gap of providing a colorful visualization 
 AND file comparison all in one command.</li> 
@@ -35,12 +35,12 @@ AND file comparison all in one command.</li>
 
 <h3>SYSTEM DESIGN:</h3>
 <ol>
-<li><strong>Architecture -</strong> This is a one-file C program that should portable for any
-C-supporting terminal application.</li>
+<li><strong>Architecture -</strong> This is a one-file C program that should be portable for any
+C-supporting terminal application. The file has been run and tested on an Ubuntu 24.04 machine.</li>
 <li><strong>Tech Choices and Justification -</strong> Pixd is a tool that has come up in our 
 coursework, so I believed the tool could be especially useful to this 
 audience. hexd is the foundation of pixd, so I decided to start with a 
-hexd implementation in preparation for the Tool 1 Refinements.</li> 
+hexd implementation in preparation for the Tool 1 Refinements phase.</li> 
 </ol>
 
 <h3>EVALUATION:</h3>
@@ -49,6 +49,7 @@ hexd implementation in preparation for the Tool 1 Refinements.</li>
 <strong>./mixd /path/to/file1 /path/to/file2</strong><br />
 Where file1 and file2 are copied of the same binary but some bytes in 
 the beginning of file1 have been modified.</li>
+
 
 <li><strong>Results -</strong> It worked! The bytes that are the same appear as normal. The
 bytes that differ appear as an __.</li>
@@ -71,7 +72,7 @@ shifting the range produces a noticeable byte match.</p>
 Ubuntu 24.04 VM.</p>
 <ol>
 <li>Download the project folder from this GitHub repo.</li>
-<li>If needed, install gcc using...<br /><strong>sudo apt update; sudo apt upgrade; sudo apt install gcc</strong><li>
+<li>If needed, install gcc using...<br /><strong>sudo apt update; sudo apt upgrade; sudo apt install gcc</strong></li>
 <li>Open the Linux Terminal.</li>
 <li>Enter the project folder. You can run <strong>cd ~/Downloads/mixd</strong></li>
 <li>Run </strong>./mixd path/to/file1 path/to/file2</strong> to get started.</li>
