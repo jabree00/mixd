@@ -60,7 +60,7 @@ the range where there is the most overall between files.</li>
 <h3>SAMPLE TESTS:</h3>
 <p>Try running the following the project root directory:</p>
 
-./mixd samples/test.txt samples/test_shifted.txt
+./mixd samples/test.txt samples/test_shifted.txt<br />
 ./mixd -R 24 samples/test.txt samples/test_shifted.txt
 
 <p>The files look highly similar based on the first execution, but
