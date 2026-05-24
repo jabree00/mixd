@@ -1,9 +1,9 @@
-.Dd February 18, 2022
-.Dt HEXD 1
+.Dd May 23, 2026
+.Dt MIXD 1
 .Os
 .Sh NAME
-.Nm hexd
-.Nd human-friendly hexdump tool
+.Nm mixd
+.Nd human-friendly hexdump comparison tool
 .Sh SYNOPSIS
 .Nm
 .Op Fl p
@@ -15,7 +15,7 @@
 .Op Ar
 .Sh DESCRIPTION
 .Nm
-prints a human-readable hexdump of the specified files, or standard input if
+prints a human-readable hexdump comparison of the specified files, or standard input if
 omitted.  Its main distinguishing feature is the use of colours to visually
 indicate which range of values an octet belongs to, aiding in spotting
 patterns in binary data.
@@ -34,19 +34,13 @@ and
 .Li ( 0xFF ) .
 .Pp
 By default, colours are used if output is a terminal, and omitted if not.
-.Pp
-Repeated output lines are collapsed into only one copy followed by a line with
-only '*', unless
+
 .Fl v
 is used.
 .Sh OPTIONS
-If no
-.Ar file
-operands are specified, standard input is read instead.  Available options are
-listed below.
+Available options are listed below.
 .Bl -tag -width Ds
-.It Fl h
-Print usage information.
+
 .It Fl p
 Plain: disable colours/formatting.
 .It Fl P
@@ -121,5 +115,8 @@ flag is useful.
 .Xr od 1 ,
 .Xr xxd 1
 .Sh AUTHORS
-Written by
+Written for hexd by
 .An FireFly
+Edited for mixd by 
+.An Jabree Ellis 
+.An Jabree Ellis

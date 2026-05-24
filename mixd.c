@@ -47,36 +47,50 @@ const char *CHAR_AREA_HIGH_LUT[] = {
   "ð", "ñ", "ò", "ó", "ô", "õ", "ö", "÷", "ø", "ù", "ú", "û", "ü", "ý", "þ", "ÿ",
 };
 
-void hexdump(FILE *f, const char *filename) {
-  u8 line[option_columns];
-  u8 prev_line[option_columns];
+void comparator(FILE *f, const char *filename, FILE *f2, const char *filename2) {
+  
+  u8 line[option_columns]; 
+  u8 line2[option_columns]; 
 
-  bool first_line = true, printed_asterisk = false;
-
-  // Seek to start; fall back to a consuming loop for non-seekable files
+  // Seek to start for file; fall back to a consuming loop for non-seekable files
   if (fseeko(f, option_range.start, SEEK_SET) < 0) {
     off_t remaining = option_range.start;
     while (remaining != 0 && fgetc(f) != EOF) remaining--;
     if (ferror(f)) err(1, "(while seeking) %s", filename);
   }
-
+  printf("File 1 is ready for processing.\n"); 
+  
+  // Seek to start for file #2; fall back to a consuming loop for non-seekable files
+  if (fseeko(f2, option_range.start, SEEK_SET) < 0) {
+    off_t remaining2 = option_range.start;
+    while (remaining2 != 0 && fgetc(f2) != EOF) remaining2--;
+    if (ferror(f2)) err(1, "(while seeking) %s", filename2);
+  }
+  
+  printf("File 2 is ready for processing.\n"); 
+  
+  //Add some whitespace to console 
+  printf("\n");
+  
+  //Starting at the user-provided start value keep going until the user-provided end point or EOF?
   for (off_t offset = option_range.start; offset < option_range.end || option_range.end == -1; offset += option_columns) {
     off_t read = offset - option_range.start;
-    size_t n = fread(line, 1, option_columns, f);
-    if (n == 0) break;
-
-    // Contract repeated identical lines
-    if (!first_line
-          && option_collapse_repetition
-          && memcmp(line, prev_line, option_columns) == 0
-          && n == option_columns) {
-      if (!printed_asterisk) {
-        printf("%8s\n", "*");
-        printed_asterisk = true;
-      }
-      continue;
+    size_t n; 
+    size_t num_bytes_read_f = fread(line, 1, option_columns, f);
+    size_t num_bytes_read_f2 = fread(line2, 1, option_columns, f2);
+    
+    //No data read, move on to next set of bytes
+    if (num_bytes_read_f == 0 && num_bytes_read_f2 == 0) {
+      break;
     }
-    printed_asterisk = false;
+    
+    //Choose the smaller of the two sets of bytes 
+    if (num_bytes_read_f2 < num_bytes_read_f){
+      n = num_bytes_read_f2; 
+    } else {
+      n = num_bytes_read_f;   
+    }
+  
 
     // Offset
     intmax_t offset = option_range.start + read;
@@ -85,13 +99,28 @@ void hexdump(FILE *f, const char *filename) {
     // Print hex area
     const char *prev_fmt = NULL;
     for (size_t j = 0; j < option_columns; j++) {
-      if (option_groupsize != 0 && j % option_groupsize == 0) printf(" ");
+    
+      //add some spacing?
+      if (option_groupsize != 0 && j % option_groupsize == 0) {
+        printf(" ");
+      }
+      
       if (j < n) {
+  
         const char *fmt = format_of(line[j]);
-        if (prev_fmt != fmt && option_use_formatting) printf("\x1B[%sm", fmt);
-        printf(" %02x", line[j]);
+        if (prev_fmt != fmt && option_use_formatting) {
+          printf("\x1B[%sm", fmt);
+        } 
+        
+        (line[j] == line2[j]) ? printf(" %02x", line[j]) : printf(" __"); 
+        
         prev_fmt = fmt;
-      } else {
+    
+      } 
+      
+      //If not enough bytes read to fill requested number of columns
+      //print blank space 
+      else {
         printf("   ");
       }
     }
@@ -99,25 +128,47 @@ void hexdump(FILE *f, const char *filename) {
 
     // Print char area
     for (size_t j = 0; j < option_columns; j++) {
-      if (option_groupsize != 0 && j % option_groupsize == 0) printf(" ");
+      if (option_groupsize != 0 && j % option_groupsize == 0) {
+        printf(" ");
+      }
+      
       if (j < n) {
         const char *fmt = format_of(line[j]);
-        if (prev_fmt != fmt && option_use_formatting) printf("\x1B[%sm", fmt);
-        if (line[j] >= 0x80) printf("%s", CHAR_AREA_HIGH_LUT[line[j] - 0x80]);
-        else putchar(isprint(line[j])? line[j] : '.');
+        
+        //Change the color if needed and user wants formatting
+        if (prev_fmt != fmt && option_use_formatting) {
+          printf("\x1B[%sm", fmt);
+        }
+        
+        if (line[j] >= 0x80 && (line[j] == line2[j])) {
+          printf("%s", CHAR_AREA_HIGH_LUT[line[j] - 0x80]);
+        }
+        else if (line[j] == line2[j]){
+          putchar(isprint(line[j])? line[j] : '.');
+        } else {
+          putchar('.');
+        }
+        
+        //Update previous format with current format in 
+        //preparation for next iteration 
         prev_fmt = fmt;
-      } else {
+      } 
+      
+      else {
         putchar(' ');
       }
     }
     printf("%s\n", option_use_formatting? "\x1B[m" : "");
 
-    memcpy(prev_line, line, n);
-    first_line = false;
-    if (n < option_columns) break;
   }
 
-  if (ferror(f)) err(1, "(while reading) %s", filename);
+  if (ferror(f)) {
+    err(1, "(while reading) %s", filename);
+  }
+  
+  if (ferror(f2)) {
+    err(1, "(while reading) %s", filename2);
+  }
 }
 
 //-- Entry point ------------
@@ -125,9 +176,14 @@ void hexdump(FILE *f, const char *filename) {
  *  optional) into a `struct offset_range` instance. */
 struct offset_range parse_range(const char *str) {
   struct offset_range res = { 0, -1 };
+  
+  //first points to first character in string 
+  //delim points to location of delimiter 
+  //second points to location after delimiter 
   const char *first = str, *delim = str + strcspn(str, "+-"), *second = delim + 1;
   if (*delim == '\0') errx(1, "no delimiter in range %s", str);
 
+  //handle invalid inputs
   char *end;
   if (first != delim) {
     res.start = strtoimax(first, &end, 0);
@@ -152,23 +208,26 @@ int main(int argc, char *argv[]) {
   // Default to colourful output if output is a TTY
   option_use_formatting = isatty(1);
 
-  // Parse options
+  // Update settings variables based on command-line arguments
   int opt;
-  while (opt = getopt(argc, argv, "g:hpPr:w:v"), opt != -1) {
+  while (opt = getopt(argc, argv, "g:hpPr:w"), opt != -1) {
     switch (opt) {
       case 'g': option_groupsize = atol(optarg); break;
       case 'p': option_use_formatting = false; break;
       case 'P': option_use_formatting = true; break;
       case 'r': option_range = parse_range(optarg); break;
-      case 'v': option_collapse_repetition = false; break;
-      case 'w': option_columns = atol(optarg); break;
+      case 'w': option_columns = atol(optarg); break; 
       case 'h': // fall through
       default:
         fprintf(stderr, "usage: hexd [-p] [-P] [-v] [-g groupsize] [-r range] [-w width]\n");
         return 1;
     }
   }
+  
+  //Subtract already-used arguments from the count  
   argc -= optind;
+  
+  //Move past already-used arguments in the array
   argv += optind;
 
   // Parse HEXD_COLORS
@@ -191,29 +250,34 @@ int main(int argc, char *argv[]) {
     }
   }
 
-  // Hexdump files
-  if (argc == 0) {
-    hexdump(stdin, "(stdin)");
-  } else {
-    for (int i = 0; i < argc; i++) {
-      FILE *f = fopen(argv[i], "r");
-      if (f == NULL) {
-        warn("%s", argv[i]);
-        continue;
-      }
-
-      if (argc > 1) {
-        printf("%s====> %s%s%s <====\n", i > 0? "\n" : "",
-                                         option_use_formatting? "\x1B[1m" : "",
-                                         argv[i],
-                                         option_use_formatting? "\x1B[m" : "");
-      }
-
-      hexdump(f, argv[i]);
-      fclose(f);
+  if (argc != 2) {
+    printf("Please supply two filepaths as input."); 
+    return 0; 
+  } 
+  
+  else {
+    //Attempt to open each file 
+    FILE *f = fopen(argv[0], "r");
+    if (f == NULL) {
+      warn("%s", argv[0]);
+      return 0; 
     }
+    
+    FILE *f2 = fopen(argv[1], "r");
+    if (f2 == NULL){
+      warn("%s", argv[1]); 
+      return 0; 
+    }
+    
+    printf("Input have been validated. Beginning comparison...\n"); 
+    comparator(f, argv[0], f2, argv[1]);
+    
+    //Signal that the used memory space is available for use again
+    fclose(f);
+    fclose(f2);
+    free(colors_var);
+    return 0;
   }
-
-  free(colors_var);
-  return 0;
+  
+  
 }
