@@ -2,15 +2,15 @@
 
 <h2>MIXD-Specific Documentation:</h2>
 
-**mixd** focused on comparing bytes in two files. 
+**mixd** focuses on comparing bytes in two files. 
 It builds upon the contributions of the original hexd project but
 currently has some trade-offs for simplicity's sake:
 
 <ol>
 <li>The option to repeat file lines has been removed.</li>
 <li>The option to supply hex values via stdin has been removed. This feature may be re-added in the future.</li>
-<li>The option to input an infinite number of files in a single run of the program.</li> 
-<ol>
+<li>The option to input an infinite number of files in a single run of the program has been removed.</li> 
+</ol>
 
 <h3>PROBLEM DEFINITION:</h3>
 
@@ -33,7 +33,7 @@ the matching bytes. One has to perform a confusing, manual eye search.</li>
 AND file comparison all in one command.</li> 
 </ol>
 
-<h3>SYSTEM DESIGN:<h3>
+<h3>SYSTEM DESIGN:</h3>
 <ol>
 <li><strong>Architecture -</strong> This is a one-file C program that should portable for any
 C-supporting terminal application.</li>
