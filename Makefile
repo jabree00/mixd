@@ -5,14 +5,14 @@ BINDIR ?= $(PREFIX)/bin
 MANDIR ?= $(PREFIX)/share/man
 
 .PHONY: all
-all: hexd
+all: mixd
 
 .PHONY: clean
 clean:
-	rm -f hexd
+	rm -f mixd
 
 .PHONY: install
-install: hexd
+install: mixd
 	mkdir -p $(DESTDIR)$(BINDIR) $(DESTDIR)$(MANDIR)/man1
-	install hexd $(DESTDIR)$(BINDIR)/hexd
-	install hexd.1 $(DESTDIR)$(MANDIR)/man1/hexd.1
+	install mixd $(DESTDIR)$(BINDIR)/mixd
+	install mixd.1 $(DESTDIR)$(MANDIR)/man1/mixd.1

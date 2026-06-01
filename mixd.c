@@ -26,6 +26,7 @@ const char *formatting_zero      = "38;5;238";
 const char *formatting_all       = "38;5;167";
 const char *formatting_low       = "38;5;150";
 const char *formatting_high      = "38;5;141";
+const char *formatting_diff 	 = "38;5;160";
 const char *formatting_printable = "";
 
 //-- Hexdump impl -----------
