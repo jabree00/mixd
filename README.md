@@ -59,13 +59,19 @@ between files can be tedious. I may implement a "brute-force" match feature that
 the range where there is the most overall between files.</li>
 </ol>
 <h3>SAMPLE TESTS:</h3>
-<p>Try running the following the project root directory:</p>
+<p>Try running the following from the project root directory:</p>
 
 ./mixd samples/test.txt samples/test_shifted.txt<br />
 ./mixd -R 24 samples/test.txt samples/test_shifted.txt
 
 <p>The files look highly similar based on the first execution, but
 shifting the range produces a noticeable byte match.</p>
+
+<p>Try running the following from the project root directory:</p>
+
+mixd samples/mixd samples/hexd 
+
+<p>Some mutual strings - i.e. "LIBC" are apparent in the output.</p> 
 
 <h2>HOW TO GET MIXD RUNNING ON YOUR SYSTEM</h2>
 <p><strong>Note:</strong> This project has been tested in DSU IALAB on an
