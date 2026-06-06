@@ -1,4 +1,4 @@
-.Dd May 23, 2026
+.Dd Jun. 6, 2026
 .Dt MIXD 1
 .Os
 .Sh NAME
@@ -9,8 +9,10 @@
 .Op Fl p
 .Op Fl P
 .Op Fl v
+.Op Fl n 
 .Op Fl g Ar groupsize
-.Op Fl r Ar range
+.Op Fl r Ar range1
+.OP Fl R Ar range2
 .Op Fl w Ar width
 .Op Ar
 .Sh DESCRIPTION
@@ -35,8 +37,6 @@ and
 .Pp
 By default, colours are used if output is a terminal, and omitted if not.
 
-.Fl v
-is used.
 .Sh OPTIONS
 Available options are listed below.
 .Bl -tag -width Ds
@@ -46,12 +46,14 @@ Plain: disable colours/formatting.
 .It Fl P
 Pretty: enable colours/formatting.
 .It Fl v
-Verbose: show every hexdump line (don't collapse repetition with '*').
+Verbose: show lines were there are no byte matches. 
+.It Fl n 
+Null: show lines were all matches are null.
 .It Fl g Ar groupsize
 Number of octets per group, set to
 .Li 8
 by default.
-.It Fl r Ar range
+.It Fl r Ar range1
 Range of octets to print from the first file.
 Specified as either
 .Em start-end
@@ -64,7 +66,7 @@ and
 are positive integers specified in either decimal, hexadecimal or octal
 (C-style notation).
 .It Fl R Ar range2
-same as above but adjusts the range for file2
+Same as above but adjusts the range for the second file.
 .Pp
 When the former syntax is used, both ends of the range are optional and
 default to the start or end of the file when omitted.
@@ -76,7 +78,7 @@ Set to
 by default.
 .El
 .Sh ENVIRONMENT
-.Ev HEXD_COLORS
+.Ev MIXD_COLORS
 can be used to override the formatting used by
 .Nm
 to classify octets.  If set, it should consist of space-separated pairs of the
@@ -90,27 +92,18 @@ is an SGR formatting string.  SGR formatting is interpreted by your terminal
 emulator; consult its documentation or ECMA-48 for more details.
 .Pp
 For example, the default formatting used when
-.Ev HEXD_COLORS
+.Ev MIXD_COLORS
 is not defined corresponds to the value
 .Pp
 .D1 Em zero=38;5;238 low=38;5;150 high=38;5;141 all=38;5;167
 .Sh EXAMPLES
-Here are some examples of useful uses of hexd's features.
+Here are some examples of useful uses of mixd's features.
 .Bl -tag -width Ds
-.It Em hexd -r0x1000+0x200 foo.bin
-Display the 512-byte range in 'foo.bin' starting at offset 0x1000.  Useful
+.It Em mixd -r 0x1000+0x200 foo.bin -R 0x50+0x200 foo2.bin
+Compare the 512-byte range in 'foo.bin' starting at offset 0x1000 and 'foo2.bin' starting at 0x50.  Useful
 when files contain other embedded files/formats at a certain location (e.g.
 archive files).
-.It Em hexd -r-0x10 *.bin
-Show the first 16 bytes of each of the *.bin files, with a heading above each
-file (if more than one).  This is useful for example to compare headers of
-several samples of an unknown format.
-.It Em curl -s http://example.com | hexd -P | less -R
-.Nm
-works as a filter, too.  For paging long hexdumps,
-.Xr less 1 Ns 's
-.Fl R
-flag is useful.
+
 .El
 .Sh SEE ALSO
 .Xr hexdump 1 ,

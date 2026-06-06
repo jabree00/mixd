@@ -19,6 +19,8 @@ size_t option_columns      = 16;
 size_t option_groupsize    = 8;
 bool option_use_formatting = true;
 bool option_collapse_repetition = true;
+bool condense_output = true; 
+bool include_null_lines = false; 
 struct offset_range option_range  = { 0, -1 };
 struct offset_range option_range2 = { 0, -1 }; 
 
@@ -27,6 +29,7 @@ const char *formatting_all       = "38;5;167";
 const char *formatting_low       = "38;5;150";
 const char *formatting_high      = "38;5;141";
 const char *formatting_diff 	 = "38;5;160";
+const char *formatting_no_match  = "38;5;30";
 const char *formatting_printable = "";
 
 //-- Hexdump impl -----------
@@ -49,15 +52,20 @@ const char *CHAR_AREA_HIGH_LUT[] = {
   "ð", "ñ", "ò", "ó", "ô", "õ", "ö", "÷", "ø", "ù", "ú", "û", "ü", "ý", "þ", "ÿ",
 };
 
-int match_found(u8 *line1, u8 *line2, int num_bytes){
+bool keep_line(u8 *line1, u8 *line2, int num_bytes, bool isNullAccepted){
   
   for(int i = 0; i < num_bytes; i++){
       if((line1[i] == line2[i]) && (line1[i] != 0x00)){
-        return 1; 
+        return true; 
       }
+      
+      else if((line1[i] == line2[i]) && (isNullAccepted == true)){
+        return true; 
+      }
+       
   }
   
-  return 0; 
+  return false; 
 }
 
 void comparator(FILE *f, const char *filename, FILE *f2, const char *filename2) {
@@ -104,7 +112,7 @@ void comparator(FILE *f, const char *filename, FILE *f2, const char *filename2) 
       n = num_bytes_read_f;   
     }
     
-    if(match_found(line, line2, n) == 0){
+    if(keep_line(line, line2, n,include_null_lines) == false && condense_output == true){
       continue; 
     }
   
@@ -124,7 +132,12 @@ void comparator(FILE *f, const char *filename, FILE *f2, const char *filename2) 
       
       if (j < n) {
   
+        //Identify the color format if bytes match. Cyan otherwise
         const char *fmt = format_of(line[j]);
+        if (line[j] != line2[j]){
+          fmt = formatting_no_match;
+        }
+        
         if (prev_fmt != fmt && option_use_formatting) {
           printf("\x1B[%sm", fmt);
         } 
@@ -229,17 +242,19 @@ int main(int argc, char *argv[]) {
 
   // Update settings variables based on command-line arguments
   int opt;
-  while (opt = getopt(argc, argv, "g:hpPr:R:w"), opt != -1) {
+  while (opt = getopt(argc, argv, "g:hpPvnr:R:w"), opt != -1) {
     switch (opt) {
       case 'g': option_groupsize = atol(optarg); break;
       case 'p': option_use_formatting = false; break;
       case 'P': option_use_formatting = true; break;
+      case 'v': condense_output = false; break; 
+      case 'n': include_null_lines = true; break; 
       case 'r': option_range = parse_range(optarg); break;
       case 'R': option_range2 = parse_range(optarg); break; 
       case 'w': option_columns = atol(optarg); break; 
       case 'h': // fall through
       default:
-        fprintf(stderr, "usage: hexd [-p] [-P] [-v] [-g groupsize] [-r range] [-w width]\n");
+        fprintf(stderr, "usage: mixd [-p] [-P] [-v] [-n] [-g groupsize] [-r File 1 range] [-r File 2 range] [-w width]\n");
         return 1;
     }
   }
@@ -250,15 +265,15 @@ int main(int argc, char *argv[]) {
   //Move past already-used arguments in the array
   argv += optind;
 
-  // Parse HEXD_COLORS
-  char *colors_var = getenv("HEXD_COLORS");
+  // Parse MIXD_COLORS
+  char *colors_var = getenv("MIXD_COLORS");
   if (colors_var != NULL) {
     colors_var = strdup(colors_var);
     if (colors_var == NULL) errx(1, "strdup");
 
     for (char *p = colors_var, *token; token = strtok(p, " "), token != NULL; p = NULL) {
       char *key = token, *value = strchr(token, '=');
-      if (value == NULL) warnx("no '=' found in HEXD_COLORS property '%s'", p);
+      if (value == NULL) warnx("no '=' found in MIXD_COLORS property '%s'", p);
       *value++ = '\0';
 
       if      (strcmp(key, "zero")      == 0) formatting_zero      = value;
@@ -266,12 +281,12 @@ int main(int argc, char *argv[]) {
       else if (strcmp(key, "printable") == 0) formatting_printable = value;
       else if (strcmp(key, "high")      == 0) formatting_high      = value;
       else if (strcmp(key, "all")       == 0) formatting_all       = value;
-      else warnx("unknown HEXD_COLORS property '%s'", key);
+      else warnx("unknown MIXD_COLORS property '%s'", key);
     }
   }
 
   if (argc != 2) {
-    printf("Please supply two filepaths as input."); 
+    printf("Please supply two filepaths as input.\n"); 
     return 0; 
   } 
   
@@ -289,7 +304,8 @@ int main(int argc, char *argv[]) {
       return 0; 
     }
     
-    printf("Input have been validated. Beginning comparison...\n"); 
+    printf("Input have been validated. Any output will be display below:\n"); 
+    printf("-----------------------------------------------------------\n"); 
     comparator(f, argv[0], f2, argv[1]);
     
     //Signal that the used memory space is available for use again
