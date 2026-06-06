@@ -49,6 +49,17 @@ const char *CHAR_AREA_HIGH_LUT[] = {
   "ð", "ñ", "ò", "ó", "ô", "õ", "ö", "÷", "ø", "ù", "ú", "û", "ü", "ý", "þ", "ÿ",
 };
 
+int match_found(u8 *line1, u8 *line2, int num_bytes){
+  
+  for(int i = 0; i < num_bytes; i++){
+      if((line1[i] == line2[i]) && (line1[i] != 0x00)){
+        return 1; 
+      }
+  }
+  
+  return 0; 
+}
+
 void comparator(FILE *f, const char *filename, FILE *f2, const char *filename2) {
   
   u8 line[option_columns]; 
@@ -91,6 +102,10 @@ void comparator(FILE *f, const char *filename, FILE *f2, const char *filename2) 
       n = num_bytes_read_f2; 
     } else {
       n = num_bytes_read_f;   
+    }
+    
+    if(match_found(line, line2, n) == 0){
+      continue; 
     }
   
 
@@ -172,6 +187,8 @@ void comparator(FILE *f, const char *filename, FILE *f2, const char *filename2) 
     err(1, "(while reading) %s", filename2);
   }
 }
+
+
 
 //-- Entry point ------------
 /** Parses a range "start-end" (both ends optional) or "start+size" (neither
